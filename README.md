@@ -13,7 +13,7 @@
         $("#btnClear").bind("click",function(){
           $.jrDraw.clearMain();
           $.jrDraw.clearTemp();
-        });
+        });`
 
         $("#selWidth").change(function(){
 		  $.jrDraw.setLineWidth($("#selWidth").val());
