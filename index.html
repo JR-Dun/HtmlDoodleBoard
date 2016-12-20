@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>h5_doodle</title>
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		<script type="text/javascript" src="js/draw.extend.js"></script>
+	</head>
+	<body>
+		<div align="center">
+			<div id="canvasContainer">
+			</div>
+
+		    <div class="control-ops">
+		    <button id="btnClear" type="button">清空画板</button>
+		    Line width : <select id="selWidth">
+		        <option value="1">1</option>
+		        <option value="3" selected="selected">3</option>
+		        <option value="5">5</option>
+		        <option value="7">7</option>
+		    </select>
+		    Color : <select id="selColor">
+		        <option value="black" selected="selected">black</option>
+		        <option value="blue">blue</option>
+		        <option value="red">red</option>
+		        <option value="green">green</option>
+		    </select>
+		    Shape : <select id="selShape">
+		        <option value="0" selected="selected">doodle</option>
+		        <option value="1">橡皮擦</option>
+		        <option value="2">直线</option>
+		        <option value="3">长方形</option>
+		        <option value="4">圆</option>
+		        <option value="5">箭头</option>
+		    </select>
+		    </div>
+		</div>    
+	</body>
+</html>
