@@ -3,7 +3,7 @@
 
 
 ## 使用例子
-'$(document).ready(function(){
+`$(document).ready(function(){
   ui.init();
   $.jrDraw.init("#canvasContainer");
 });
@@ -27,4 +27,4 @@ var ui = {
 		  $.jrDraw.setType($("#selShape").val());
 		});
     }
-}'
+}`
