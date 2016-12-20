@@ -6,9 +6,9 @@
 `$(document).ready(function(){
   ui.init();
   $.jrDraw.init("#canvasContainer");
-});
+});`
 
-var ui = {
+`var ui = {
     init: function () {
         $("#btnClear").bind("click",function(){
           $.jrDraw.clearMain();
