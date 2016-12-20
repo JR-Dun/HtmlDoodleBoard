@@ -27,4 +27,4 @@
 		  $.jrDraw.setType($("#selShape").val());
 		});
     }
-}`
+`}`
