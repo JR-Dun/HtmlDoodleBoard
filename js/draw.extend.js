@@ -57,23 +57,47 @@ $.jrDraw = {
             });
         });
 
-        $('#canvasTemp').mousedown(function (e) {
-            canvasMousePressed = true;
-            $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
-        });
-     
-        $('#canvasTemp').mousemove(function (e) {
-            if (canvasMousePressed) {
-                $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
-            }
-        });
-     
-        $('#canvasTemp').mouseup(function (e) {
-            $.jrDraw.end();
-        });
-        $('#canvasTemp').mouseleave(function (e) {
-            $.jrDraw.end();
-        });
+        $.jrDraw.binding();
+    },
+    binding:function() {
+        var mobile   = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent); 
+        if(mobile)
+        {
+            $('#canvasTemp').touchstart(function (e) {
+                canvasMousePressed = true;
+                $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+            });
+        
+            $('#canvasTemp').touchmove(function (e) {
+                if (canvasMousePressed) {
+                    $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                }
+            });
+        
+            $('#canvasTemp').touchend(function (e) {
+                $.jrDraw.end();
+            });
+        }
+        else
+        {
+            $('#canvasTemp').mousedown(function (e) {
+                canvasMousePressed = true;
+                $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+            });
+        
+            $('#canvasTemp').mousemove(function (e) {
+                if (canvasMousePressed) {
+                    $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                }
+            });
+        
+            $('#canvasTemp').mouseup(function (e) {
+                $.jrDraw.end();
+            });
+            $('#canvasTemp').mouseleave(function (e) {
+                $.jrDraw.end();
+            });
+        }
     },
     draw:function(x, y, isDown) {
         var type = canvasDrawType;
