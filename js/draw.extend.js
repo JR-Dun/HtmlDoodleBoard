@@ -63,18 +63,20 @@ $.jrDraw = {
         var mobile   = /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent); 
         if(mobile)
         {
-            $('#canvasTemp').touchstart(function (e) {
+            $('#canvasTemp').bind('touchstart', function (e) {
                 canvasMousePressed = true;
-                $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, false);
+                var point = e.originalEvent.touches[0];
+                $.jrDraw.draw(point.pageX - $(this).offset().left, point.pageY - $(this).offset().top, false);
             });
         
-            $('#canvasTemp').touchmove(function (e) {
+            $('#canvasTemp').bind('touchmove', function (e) {
                 if (canvasMousePressed) {
-                    $.jrDraw.draw(e.pageX - $(this).offset().left, e.pageY - $(this).offset().top, true);
+                    var point = e.originalEvent.touches[0];
+                    $.jrDraw.draw(point.pageX - $(this).offset().left, point.pageY - $(this).offset().top, true);
                 }
             });
         
-            $('#canvasTemp').touchend(function (e) {
+            $('#canvasTemp').bind('touchend', function (e) {
                 $.jrDraw.end();
             });
         }
