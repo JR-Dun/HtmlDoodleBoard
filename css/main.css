@@ -6,11 +6,6 @@ html,body
 	padding: 0px;
 }
 
-body
-{
-	overflow: hidden;
-}
-
 .container
 {
 	width:100%;
