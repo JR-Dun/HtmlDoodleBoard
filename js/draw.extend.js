@@ -2,10 +2,10 @@ var canvasMousePressed = false;
 var canvasLastX, canvasLastY;
 var canvasMain, canvasTemp;
 var contextMain, contextTemp;
-var canvasEraserWidth = 10;
+var canvasEraserWidth = 40;
 var canvasEraserType = '1';
 
-var canvasDrawType = 0,canvasDrawColor = 'black',canvasDrawLineWidth = 3;
+var canvasDrawType = 0,canvasDrawColor = 'black',canvasDrawLineWidth = 4;
 
 $.jrDraw = {
     setType:function(value)
@@ -28,6 +28,9 @@ $.jrDraw = {
     setLineWidth:function(value)
     {
         canvasDrawLineWidth = value;
+    },
+    getBrushWidth:function(w) {
+        return w / 1000.0 * $('#canvasTemp').width();
     },
     init:function(containerName) {
         var container = $(containerName);
@@ -107,11 +110,11 @@ $.jrDraw = {
         if(type == '0')
         {
             if (isDown) {
-                this.doodle(canvasLastX,canvasLastY,x, y);
+                this.doodle(canvasLastX,canvasLastY,x, y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
             }
             else
             {
-                this.doodlePoint(x, y);
+                this.doodlePoint(x, y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
             }
             canvasLastX = x; canvasLastY = y;
         }
@@ -130,7 +133,7 @@ $.jrDraw = {
         else if(type == '2')
         {
             if (isDown) {
-                this.line(canvasLastX,canvasLastY,x, y);
+                this.line(canvasLastX,canvasLastY,x, y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
                 return;
             }
             canvasLastX = x; canvasLastY = y;
@@ -138,7 +141,7 @@ $.jrDraw = {
         else if(type == '3')
         {
             if (isDown) {
-                this.rect(canvasLastX,canvasLastY,x, y);
+                this.rect(canvasLastX,canvasLastY,x, y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
                 return;
             }
             canvasLastX = x; canvasLastY = y;
@@ -146,7 +149,7 @@ $.jrDraw = {
         else if(type == '4')
         {
             if (isDown) {
-                this.round(canvasLastX,canvasLastY,x, y);
+                this.round(canvasLastX,canvasLastY,x, y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
                 return;
             }
             canvasLastX = x; canvasLastY = y;
@@ -154,7 +157,7 @@ $.jrDraw = {
         else if(type == '5')
         {
             if (isDown) {
-                this.arrow(canvasLastX,canvasLastY,x, y);
+                this.arrow(canvasLastX,canvasLastY,x, y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
                 return;
             }
             canvasLastX = x; canvasLastY = y;
@@ -192,20 +195,20 @@ $.jrDraw = {
         contextTemp.clearRect(0, 0, canvasTemp.width, canvasTemp.height);
     },
     //涂鸦
-    doodle:function(startX, startY, endX, endY) {
+    doodle:function(startX, startY, endX, endY, lineColor, lineWidth) {
         contextTemp.beginPath();
-        contextTemp.strokeStyle = canvasDrawColor;
-        contextTemp.lineWidth = canvasDrawLineWidth;
+        contextTemp.strokeStyle = lineColor;
+        contextTemp.lineWidth = lineWidth;
         contextTemp.lineJoin = "round";
         contextTemp.moveTo(startX, startY);
         contextTemp.lineTo(endX, endY);
         contextTemp.closePath();
         contextTemp.stroke();
     },
-    doodlePoint:function(x, y) {
+    doodlePoint:function(x, y, lineColor, lineWidth) {
         contextTemp.beginPath();
-        contextTemp.strokeStyle = canvasDrawColor;
-        contextTemp.lineWidth = canvasDrawLineWidth;
+        contextTemp.strokeStyle = lineColor;
+        contextTemp.lineWidth = lineWidth;
         contextTemp.lineJoin = "round";
         contextTemp.moveTo(x, y);
         contextTemp.lineTo(x - 0.1, y - 0.1);
@@ -214,54 +217,40 @@ $.jrDraw = {
     },
     //橡皮擦
     eraser:function(startX, startY, endX, endY) {
-        //获取两个点之间的剪辑区域四个端点
-        var asin = canvasEraserWidth * Math.sin(Math.atan((endY-startY)/(endX-startX)));
-        var acos = canvasEraserWidth * Math.cos(Math.atan((endY-startY)/(endX-startX)))
-        var x1 = startX + asin;
-        var y1 = startY - acos;
-        var x2 = startX - asin;
-        var y2 = startY + acos;
-        var x3 = endX + asin;
-        var y3 = endY - acos;
-        var x4 = endX - asin;
-        var y4 = endY + acos;
+        if(startX == endX && startY == endY) return;
 
-        //保证线条的连贯，所以在矩形一端画圆
-        contextTemp.save();
         contextTemp.beginPath();
-        contextTemp.arc(endX, endY, canvasEraserWidth, 0, 2 * Math.PI);
-        contextTemp.clip();
-        contextTemp.clearRect(0, 0, canvasTemp.width, canvasTemp.height);
-        contextTemp.closePath();
-        contextTemp.restore();
-
-        //清除矩形剪辑区域里的像素
+        contextTemp.globalCompositeOperation = "destination-out";
+        contextTemp.lineWidth = $.jrDraw.getBrushWidth(canvasEraserWidth);
+        contextTemp.lineCap = "round";
+        contextTemp.lineJoin = "round";
         contextTemp.save();
-        contextTemp.beginPath();
-        contextTemp.moveTo(x1,y1);
-        contextTemp.lineTo(x3,y3);
-        contextTemp.lineTo(x4,y4);
-        contextTemp.lineTo(x2,y2);
+        contextTemp.moveTo(startX,startY);
+        contextTemp.lineTo(endX,endY);
         contextTemp.closePath();
-        contextTemp.clip();
-        contextTemp.clearRect(0, 0, canvasTemp.width, canvasTemp.height);
-        contextTemp.restore();
+        contextTemp.stroke();
+        contextTemp.globalCompositeOperation = "destination-over";
     },
     eraserPoint:function(x, y) {
         contextTemp.beginPath();
         contextTemp.globalCompositeOperation = "destination-out";
-        contextTemp.arc(x, y, canvasEraserWidth, 0, 2 * Math.PI);
-        contextTemp.fill();
+        contextTemp.lineWidth = $.jrDraw.getBrushWidth(canvasEraserWidth);
+        contextTemp.lineCap = "round";
+        contextTemp.lineJoin = "round";
+        contextTemp.save();
+        contextTemp.moveTo(x, y);
+        contextTemp.lineTo(x - 0.1, y - 0.1);
         contextTemp.closePath();
+        contextTemp.stroke();
         contextTemp.globalCompositeOperation = "destination-over";
     },
     //直线
-    line:function(startX, startY, endX, endY) {
+    line:function(startX, startY, endX, endY, lineColor, lineWidth) {
         contextTemp.beginPath();
         $.jrDraw.clearTemp();
 
-        contextTemp.strokeStyle = canvasDrawColor;
-        contextTemp.lineWidth = canvasDrawLineWidth;
+        contextTemp.strokeStyle = lineColor;
+        contextTemp.lineWidth = lineWidth;
         contextTemp.lineJoin = "round";
         contextTemp.moveTo(startX, startY);
         contextTemp.lineTo(endX, endY);
@@ -269,7 +258,7 @@ $.jrDraw = {
         contextTemp.stroke();
     },
     //矩形
-    rect:function(startX, startY, endX, endY) {
+    rect:function(startX, startY, endX, endY, lineColor, lineWidth) {
         var originX,originY,rectW,rectH;
         if(startX < endX)
         {
@@ -297,15 +286,15 @@ $.jrDraw = {
         contextTemp.beginPath();
         $.jrDraw.clearTemp();
 
-        contextTemp.strokeStyle = canvasDrawColor;
-        contextTemp.lineWidth = canvasDrawLineWidth;
+        contextTemp.strokeStyle = lineColor;
+        contextTemp.lineWidth = lineWidth;
         contextTemp.lineJoin = "round";
         contextTemp.rect(originX, originY, rectW, rectH);
         contextTemp.closePath();
         contextTemp.stroke();
     },
     //圆
-    round:function(startX, startY, endX, endY) {
+    round:function(startX, startY, endX, endY, lineColor, lineWidth) {
         var centerX,centerY,arcW,arcH,control;
         if(startX < endX)
         {
@@ -337,8 +326,8 @@ $.jrDraw = {
         contextTemp.beginPath();
         $.jrDraw.clearTemp();
 
-        contextTemp.strokeStyle = canvasDrawColor;
-        contextTemp.lineWidth = canvasDrawLineWidth;
+        contextTemp.strokeStyle = lineColor;
+        contextTemp.lineWidth = lineWidth;
         contextTemp.lineJoin = "round";
         contextTemp.moveTo(centerX, centerY-arcH);
         contextTemp.bezierCurveTo(centerX+control, centerY-arcH, centerX+control, centerY+arcH, centerX, centerY+arcH);
@@ -347,11 +336,11 @@ $.jrDraw = {
         contextTemp.stroke();
     },
     //箭头
-    arrow:function(startX, startY, endX, endY) {
+    arrow:function(startX, startY, endX, endY, lineColor, lineWidth) {
         var slopy, cosy, siny;
         //箭头尺寸
-        var arrowLength = canvasDrawLineWidth * 5;
-        var arrowWidth = canvasDrawLineWidth * 5;
+        var arrowLength = lineWidth * 5;
+        var arrowWidth = lineWidth * 5;
         //
         var distance = this.getDistance(startX,startY,endX,endY);
         if(arrowWidth >= distance * 0.5)
@@ -368,8 +357,8 @@ $.jrDraw = {
         contextTemp.beginPath();
         $.jrDraw.clearTemp();
 
-        contextTemp.strokeStyle = canvasDrawColor;
-        contextTemp.lineWidth = canvasDrawLineWidth;
+        contextTemp.strokeStyle = lineColor;
+        contextTemp.lineWidth = lineWidth;
         contextTemp.lineCap = "round";
         contextTemp.lineJoin = "round";
         contextTemp.moveTo(startX, startY);
