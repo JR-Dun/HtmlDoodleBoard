@@ -8,8 +8,7 @@ var canvasEraserType = '1';
 var canvasDrawType = 0,canvasDrawColor = 'black',canvasDrawLineWidth = 4;
 
 $.jrDraw = {
-    setType:function(value)
-    {
+    setType:function(value) {
         canvasDrawType = value;
 
         if(canvasDrawType == canvasEraserType)
@@ -21,12 +20,10 @@ $.jrDraw = {
             $.jrDraw.drawToMain();
         }
     },
-    setColor:function(value)
-    {
+    setColor:function(value) {
         canvasDrawColor = value;
     },
-    setLineWidth:function(value)
-    {
+    setLineWidth:function(value) {
         canvasDrawLineWidth = value;
     },
     getBrushWidth:function(w) {
@@ -282,7 +279,6 @@ $.jrDraw = {
             rectH = startY - endY;
         }
 
-        contextTemp.restore();
         contextTemp.beginPath();
         $.jrDraw.clearTemp();
 
@@ -322,7 +318,6 @@ $.jrDraw = {
         arcW = arcW / 2;
         arcH = arcH / 2;
 
-        contextTemp.restore();
         contextTemp.beginPath();
         $.jrDraw.clearTemp();
 
@@ -352,8 +347,6 @@ $.jrDraw = {
         cosy = Math.cos(slopy);
         siny = Math.sin(slopy);
 
-
-        contextTemp.restore();
         contextTemp.beginPath();
         $.jrDraw.clearTemp();
 
@@ -394,12 +387,83 @@ $.jrDraw = {
         return localPoint;
     },
     test:function() {
-        var p = new JRPoint(2,3);
-        var s = new JRSize(5,6);
-        console.log(p);
-        console.log(p.y);
-        console.log(s);
-        console.log(s.h);
+        // var p = new JRPoint(2,3);
+        // var s = new JRSize(5,6);
+        // console.log(p);
+
+        var arrayPoint = [];
+
+        arrayPoint.push(new JRPoint(135,120));
+        arrayPoint.push(new JRPoint(150,104));
+        arrayPoint.push(new JRPoint(172,96));
+        arrayPoint.push(new JRPoint(186,103));
+        arrayPoint.push(new JRPoint(194,118));
+        arrayPoint.push(new JRPoint(195,135));
+        arrayPoint.push(new JRPoint(199,153));
+        arrayPoint.push(new JRPoint(201,173));
+        arrayPoint.push(new JRPoint(204,195));
+        arrayPoint.push(new JRPoint(207,215));
+        arrayPoint.push(new JRPoint(214,231));
+        arrayPoint.push(new JRPoint(223,234));
+        arrayPoint.push(new JRPoint(238,231));
+        arrayPoint.push(new JRPoint(246,225));
+        arrayPoint.push(new JRPoint(250,213));
+        arrayPoint.push(new JRPoint(255,197));
+        arrayPoint.push(new JRPoint(260,192));
+        arrayPoint.push(new JRPoint(288,195));
+        arrayPoint.push(new JRPoint(297,213));
+        arrayPoint.push(new JRPoint(301,240));
+        arrayPoint.push(new JRPoint(299,262));
+        arrayPoint.push(new JRPoint(311,299));
+        arrayPoint.push(new JRPoint(320,314));
+        arrayPoint.push(new JRPoint(332,317));
+        arrayPoint.push(new JRPoint(345,316));
+        arrayPoint.push(new JRPoint(357,308));
+        arrayPoint.push(new JRPoint(367,294));
+        arrayPoint.push(new JRPoint(371,277));
+        arrayPoint.push(new JRPoint(405,274));
+        arrayPoint.push(new JRPoint(418,284));
+        arrayPoint.push(new JRPoint(418,285));
+        arrayPoint.push(new JRPoint(421,296));
+        arrayPoint.push(new JRPoint(420,312));
+        arrayPoint.push(new JRPoint(420,321));
+        arrayPoint.push(new JRPoint(421,333));
+        arrayPoint.push(new JRPoint(421,348));
+        arrayPoint.push(new JRPoint(426,364));
+        arrayPoint.push(new JRPoint(453,362));
+        arrayPoint.push(new JRPoint(480,350));
+        arrayPoint.push(new JRPoint(504,338));
+        arrayPoint.push(new JRPoint(516,332));
+        arrayPoint.push(new JRPoint(547,321));
+        arrayPoint.push(new JRPoint(564,314));
+        arrayPoint.push(new JRPoint(565,314));
+        arrayPoint.push(new JRPoint(586,306));
+
+        //draw
+        arrayPoint.forEach(function(point, index) {
+            if (index > 0) {
+                $.jrDraw.doodle(canvasLastX,canvasLastY,point.x, point.y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
+            }
+            else
+            {
+                $.jrDraw.doodlePoint(point.x, point.y, canvasDrawColor, $.jrDraw.getBrushWidth(canvasDrawLineWidth));
+            }
+            canvasLastX = point.x; canvasLastY = point.y;
+        });
+
+        //eraser
+        arrayPoint.forEach(function(point, index) {
+            if(index > 10 && index < 20) {
+                if (index > 0) {
+                    $.jrDraw.eraser(canvasLastX,canvasLastY,point.x, point.y);
+                }
+                else
+                {
+                    $.jrDraw.eraserPoint(point.x, point.y);
+                }
+                canvasLastX = point.x; canvasLastY = point.y;
+            }
+        })  
     }
 };
 
@@ -415,3 +479,4 @@ function JRSize(w,h)
     this.w = w;
     this.h = h;
 }
+

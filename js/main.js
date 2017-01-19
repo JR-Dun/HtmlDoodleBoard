@@ -1,6 +1,7 @@
 $(document).ready(function(){
   ui.init();
   $.jrDraw.init("#canvasContainer");
+  $.jrDraw.test();
 });
 
 var ui = {
